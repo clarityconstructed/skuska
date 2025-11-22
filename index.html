@@ -1,11 +1,217 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <title>Email Communication Guide</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Communication Guide</title>
+
+  <!-- SIMPLE TAILWIND CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #e0f2fe, #ffffff, #eef2ff);
+    }
+    .lang-btn.active {
+      background: linear-gradient(to right, #0284c7, #4f46e5);
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+  </style>
 </head>
-<body>
-    <h1>Email Communication – Corporate Education</h1>
-  <p>Stránka bude čoskoro doplnená – verzia 2.</p>
+
+<body class="min-h-screen flex justify-center px-4 py-8">
+
+<div class="w-full max-w-6xl bg-white/80 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-6 md:p-10 space-y-8">
+
+  <!-- HEADER -->
+  <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 id="title" class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-sky-700 to-indigo-700 bg-clip-text text-transparent">
+        Email Communication Guide
+      </h1>
+      <p id="subtitle" class="mt-2 text-sm md:text-base text-slate-600 max-w-2xl">
+        Practical rules for using To, Cc, Bcc and replying professionally.
+      </p>
+    </div>
+
+    <!-- LANGUAGE SWITCHER -->
+    <div class="flex items-center gap-2 self-start md:self-auto">
+      <span class="text-xs uppercase tracking-wide text-slate-500 mr-1">
+        Language / Jazyk
+      </span>
+      <div class="inline-flex rounded-full bg-slate-100 p-1">
+        <button class="lang-btn px-3 py-1 text-xs md:text-sm rounded-full font-medium" data-lang="cs">CZ</button>
+        <button class="lang-btn px-3 py-1 text-xs md:text-sm rounded-full font-medium" data-lang="sk">SK</button>
+        <button class="lang-btn px-3 py-1 text-xs md:text-sm rounded-full font-medium" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div id="content" class="space-y-6 text-slate-800 text-sm leading-relaxed"></div>
+
+  <footer class="pt-4 border-t border-slate-100 text-[11px] text-slate-500">
+    Corporate email etiquette – internal training material.
+  </footer>
+
+</div>
+
+<script>
+/* --------------------------------------------------------
+   TEXTS (FULL MULTILANGUAGE CONTENT)
+--------------------------------------------------------- */
+const TEXTS = {
+  en: {
+    title: "Email Communication Guide",
+    subtitle: "Practical rules for using To, Cc, Bcc and replying professionally.",
+
+    sections: [
+      {
+        h2: "To, Cc, Bcc – How to Use Correctly",
+        p: "Choose recipients carefully for clarity, focus and privacy.",
+        items: [
+          "<b>To:</b> main recipients, action expected.",
+          "<b>Cc:</b> secondary recipients, info only.",
+          "<b>Bcc:</b> private copy, mass messages."
+        ]
+      },
+      {
+        h2: "When Should You Reply?",
+        p: "Reply only when you add value – and only to those who need it.",
+        items: [
+          "You are in To and action is required.",
+          "You are responsible for the topic.",
+          "You need clarification.",
+          "You acknowledge important instructions."
+        ]
+      },
+      {
+        h2: "When You Should NOT Reply",
+        p: "Avoid unnecessary communication noise.",
+        items: [
+          "You are only in Cc.",
+          "It is a general announcement.",
+          "Sender clearly writes ‘No reply needed’."
+        ]
+      }
+    ]
+  },
+
+  cs: {
+    title: "Průvodce e-mailovou komunikací",
+    subtitle: "Praktická pravidla pro používání To, Cc, Bcc a správné reakce.",
+
+    sections: [
+      {
+        h2: "To, Cc, Bcc – jak správně používat",
+        p: "Volte adresáty tak, aby bylo jasné, kdo má jednat a kdo je jen v kopii.",
+        items: [
+          "<b>To:</b> hlavní adresáti, očekává se akce.",
+          "<b>Cc:</b> kopie pro informaci.",
+          "<b>Bcc:</b> skrytá kopie, hromadné rozesílky."
+        ]
+      },
+      {
+        h2: "Kdy odpovídat?",
+        p: "Odpovídejte pouze tam, kde přidáváte hodnotu.",
+        items: [
+          "Jste v To a je požadována akce.",
+          "Téma spadá do vaší odpovědnosti.",
+          "Potřebujete upřesnění.",
+          "Potvrzení důležité instrukce."
+        ]
+      },
+      {
+        h2: "Kdy NEodpovídat",
+        p: "Minimalizujte e-mailový šum.",
+        items: [
+          "Jste pouze v Cc.",
+          "Jde o obecné oznámení.",
+          "Odesilatel uvádí ‘Není nutné odpovídat’."
+        ]
+      }
+    ]
+  },
+
+  sk: {
+    title: "Sprievodca e-mailovou komunikáciou",
+    subtitle: "Praktické pravidlá pre To, Cc, Bcc a správne odpovedanie.",
+
+    sections: [
+      {
+        h2: "To, Cc, Bcc – ako správne používať",
+        p: "Adresátov voľte podľa toho, kto koná, kto je iba v kópii a koho chránime.",
+        items: [
+          "<b>To:</b> hlavní príjemcovia, očakáva sa akcia.",
+          "<b>Cc:</b> kópia pre informáciu.",
+          "<b>Bcc:</b> skrytá kópia, hromadné správy."
+        ]
+      },
+      {
+        h2: "Kedy odpovedať?",
+        p: "Odpovedajte vtedy, keď je odpoveď prínosná.",
+        items: [
+          "Ste v To a je požadovaná akcia.",
+          "Téma je vo vašej zodpovednosti.",
+          "Potrebujete doplniť informácie.",
+          "Potvrdzujete pokyny."
+        ]
+      },
+      {
+        h2: "Kedy NEodpovedať",
+        p: "Znižujte zbytočný e-mailový hluk.",
+        items: [
+          "Ste len v Cc.",
+          "Oznámenie, newsletter.",
+          "Odosielateľ uvádza ‘Nie je potrebné odpovedať’."
+        ]
+      }
+    ]
+  }
+};
+
+/* --------------------------------------------------------
+   RENDER FUNCTION
+--------------------------------------------------------- */
+function render(lang) {
+  const t = TEXTS[lang];
+
+  document.querySelector("#title").textContent = t.title;
+  document.querySelector("#subtitle").textContent = t.subtitle;
+
+  const content = document.querySelector("#content");
+  content.innerHTML = "";
+
+  t.sections.forEach(sec => {
+    const block = document.createElement("section");
+    block.className = "p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2";
+
+    block.innerHTML = `
+      <h2 class="text-xl font-semibold">${sec.h2}</h2>
+      <p class="text-slate-600">${sec.p}</p>
+      <ul class="list-disc ml-6 text-slate-700 space-y-1">
+        ${sec.items.map(i => `<li>${i}</li>`).join("")}
+      </ul>
+    `;
+    content.appendChild(block);
+  });
+
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+  });
+}
+
+/* INIT - default CZ */
+render("cs");
+
+/* LANGUAGE SWITCH */
+document.querySelectorAll(".lang-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    render(btn.dataset.lang);
+  });
+});
+</script>
+
 </body>
 </html>

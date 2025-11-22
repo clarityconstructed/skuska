@@ -1,0 +1,712 @@
+import React, { useState } from "react";
+
+const TEXTS = {
+  en: {
+    code: "EN",
+    label: "English",
+    title: "Email Communication Guide",
+    subtitle:
+      "Practical rules for using To, Cc, Bcc and replying in a professional way.",
+    sectionToCcBccTitle: "To, Cc, Bcc: How and When to Use",
+    sectionToCcBccDesc: "Choose recipients carefully for clarity, focus and privacy.",
+    toTitle: "To",
+    toDesc: "Main recipients – you expect action or a reply.",
+    toItems: [
+      "Safety drill confirmation – Production Supervisor",
+      "Equipment order approval – Purchasing Manager",
+      "Holiday shift scheduling – All Shift Leaders",
+    ],
+    ccTitle: "Cc",
+    ccDesc: "Secondary recipients – for information only, no action expected.",
+    ccItems: [
+      "Revised quality procedure – Factory Director informed",
+      "Machine repair status – Production Planners informed",
+      "Monthly KPI results – HR & Finance informed",
+    ],
+    bccTitle: "Bcc",
+    bccDesc: "Use for privacy, large distribution or internal control.",
+    bccItems: [
+      "Safety newsletter – Safety Officer in Bcc",
+      "Policy change – Legal Counsel in Bcc",
+      "Customer shipment notification – Sales Manager in Bcc",
+    ],
+    reactTitle: "How and When to React or Reply",
+    reactDesc: "Reply only when you add value – and only to the right people.",
+    shouldReplyTitle: "You SHOULD reply when…",
+    shouldReplyItems: [
+      "You are addressed in To and action or decision is expected.",
+      "The message affects your responsibility or your team.",
+      "You need clarification to complete your task.",
+      "You confirm receipt of important instructions.",
+    ],
+    shouldNotReplyTitle: "You should NOT reply when…",
+    shouldNotReplyItems: [
+      "You are in Cc only for information.",
+      "It is a general announcement or newsletter.",
+      "The sender clearly states ‘No reply needed’.",
+    ],
+    replyAllTitle: "When is Reply All appropriate?",
+    replyAllItems: [
+      "Group decisions (everyone should see the final decision).",
+      "Status updates that are relevant for all in To/Cc.",
+      "Short confirmations that concern the whole group (e.g. ‘Monday works for us’).",
+    ],
+    examplesTitle: "Example phrases",
+    examplesReplyLabel: "Reply",
+    examplesReply: [
+      "Received, I will update the team and report back.",
+      "Could you please specify which machine is affected?",
+      "Thank you for the update. We will complete this as instructed.",
+    ],
+    examplesNoReplyLabel: "No reply needed",
+    examplesNoReply: [
+      "Annual shutdown dates attached. (No reply needed)",
+      "Subject: Weekly Production Stats (No response needed)",
+      "New code of conduct – ask questions only if something is unclear.",
+    ],
+    examplesReplyAllLabel: "Reply All",
+    examplesReplyAll: [
+      "Monday works for my team as well.",
+      "Production also supports the new process.",
+      "Welcome to the factory, John!",
+    ],
+    recTitle: "Recommendations",
+    recItems: [
+      "Always double‑check To, Cc and Bcc before sending.",
+      "Use clear, concise subject lines that describe the purpose.",
+      "Keep emails short, structured and focused on one topic.",
+      "Use bullet points for tasks, deadlines and decisions.",
+      "Explicitly write if a reply is required and by when.",
+      "Avoid Reply All unless the information is relevant to everyone.",
+      "Start a new email thread for a new topic instead of reusing old chains.",
+    ],
+    summaryTitle: "Summary in one glance",
+    summaryRows: [
+      {
+        usage: "To",
+        when: "Action needed",
+        example: "To: Jane – Please review the attached report.",
+      },
+      {
+        usage: "Cc",
+        when: "Information only",
+        example: "Cc: HR – For your records, salary process updated.",
+      },
+      {
+        usage: "Bcc",
+        when: "Privacy / bulk info",
+        example: "Bcc: All warehouse – Annual safety update attached.",
+      },
+      {
+        usage: "Reply",
+        when: "Action / clarification",
+        example: "I will complete this by Friday and confirm.",
+      },
+      {
+        usage: "Reply All",
+        when: "Group relevance",
+        example: "We all agree with the proposed schedule.",
+      },
+    ],
+  },
+  cs: {
+    code: "CZ",
+    label: "Čeština",
+    title: "Průvodce e‑mailovou komunikací",
+    subtitle:
+      "Praktická pravidla pro používání polí To, Cc, Bcc a pro správné reakce.",
+    sectionToCcBccTitle: "To, Cc, Bcc: jak a kdy používat",
+    sectionToCcBccDesc:
+      "Volte adresáty tak, aby bylo jasné, kdo má jednat, kdo je jen v kopii a koho chráníme z hlediska osobních údajů.",
+    toTitle: "To",
+    toDesc: "Hlavní adresáti – od těch očekáváme akci nebo odpověď.",
+    toItems: [
+      "Potvrzení bezpečnostního cvičení – mistr výroby",
+      "Schválení objednávky zařízení – nákupčí",
+      "Plánování svátečních směn – všichni vedoucí směn",
+    ],
+    ccTitle: "Cc",
+    ccDesc: "Kopie pro informaci – bez očekávané reakce.",
+    ccItems: [
+      "Upravený postup kvality – v kopii ředitel závodu",
+      "Stav opravy stroje – v kopii plánovači výroby",
+      "Měsíční výsledky KPI – v kopii HR a finance",
+    ],
+    bccTitle: "Bcc",
+    bccDesc:
+      "Skrytá kopie – pro hromadné rozesílky nebo interní kontrolu, ostatní adresu nevidí.",
+    bccItems: [
+      "Bezpečnostní newsletter – v Bcc bezpečák",
+      "Změna směrnice – v Bcc právní oddělení",
+      "Informace o expedici zákazníkovi – v Bcc obchodní manažer",
+    ],
+    reactTitle: "Jak a kdy reagovat / odpovídat",
+    reactDesc:
+      "Odpovídejte jen tam, kde přidáváte hodnotu – a jen lidem, kterých se to týká.",
+    shouldReplyTitle: "Odpovědět byste měli, když…",
+    shouldReplyItems: [
+      "Jste v poli To a je po vás požadováno rozhodnutí nebo akce.",
+      "Zpráva se týká vaší odpovědnosti nebo vašeho týmu.",
+      "Potřebujete upřesnění, abyste úkol mohli splnit.",
+      "Je vhodné potvrdit převzetí důležitého pokynu.",
+    ],
+    shouldNotReplyTitle: "Naopak NEodpovídáte, když…",
+    shouldNotReplyItems: [
+      "Jste pouze v Cc pro informaci.",
+      "Jde o obecné oznámení nebo newsletter.",
+      "Odesílatel výslovně uvádí ‚Není nutné odpovídat‘.",
+    ],
+    replyAllTitle: "Kdy použít Reply All (Odpovědět všem)?",
+    replyAllItems: [
+      "Výsledek skupinového rozhodnutí – všichni mají znát závěr.",
+      "Stavová informace důležitá pro všechny v To/Cc.",
+      "Krátké potvrzení, které se týká celé skupiny (např. ‚Pondělí nám také vyhovuje‘).",
+    ],
+    examplesTitle: "Příklady formulací",
+    examplesReplyLabel: "Odpověď",
+    examplesReply: [
+      "Děkuji, zprávu jsem obdržel(a) a tým budu informovat.",
+      "Prosím o upřesnění, kterého stroje se problém týká.",
+      "Potvrzuji přijetí pokynu, úkol zajistíme dle instruktáže.",
+    ],
+    examplesNoReplyLabel: "Bez nutnosti reakce",
+    examplesNoReply: [
+      "V příloze zasíláme termíny odstávky. (Není nutné odpovídat)",
+      "Předmět: Týdenní statistika výroby (Neodpovídejte na tento e‑mail)",
+      "Nový etický kodex – v případě dotazů se ozvěte nadřízenému.",
+    ],
+    examplesReplyAllLabel: "Odpovědět všem",
+    examplesReplyAll: [
+      "Pondělí platí i za náš tým.",
+      "Výroba také souhlasí s novým postupem.",
+      "Vítej v týmu, Johne!",
+    ],
+    recTitle: "Doporučení",
+    recItems: [
+      "Před odesláním vždy zkontrolujte, kdo je v To, Cc a Bcc.",
+      "Používejte stručné a výstižné předměty zpráv.",
+      "Pište krátké odstavce, využívejte odrážky.",
+      "Jasně napište, do kdy očekáváte odpověď.",
+      "Reply All používejte jen tehdy, když je to nutné.",
+      "Pro nový okruh témat začněte nový e‑mailový řetězec.",
+    ],
+    summaryTitle: "Shrnutí na jednom místě",
+    summaryRows: [
+      {
+        usage: "To",
+        when: "Je potřeba akce",
+        example: "To: Jana – Prosím o kontrolu přiložené zprávy.",
+      },
+      {
+        usage: "Cc",
+        when: "Pouze pro informaci",
+        example: "Cc: HR – Pro vaši evidenci, aktualizace procesu mezd.",
+      },
+      {
+        usage: "Bcc",
+        when: "Soukromí / hromadné rozesílky",
+        example: "Bcc: Sklad – Roční bezpečnostní aktualizace v příloze.",
+      },
+      {
+        usage: "Reply",
+        when: "Akce / upřesnění",
+        example: "Úkol dokončím do pátku a potvrdím.",
+      },
+      {
+        usage: "Reply All",
+        when: "Důležité pro všechny",
+        example: "Se navrženým harmonogramem souhlasíme.",
+      },
+    ],
+  },
+  sk: {
+    code: "SVK",
+    label: "Slovenčina",
+    title: "Sprievodca e‑mailovou komunikáciou",
+    subtitle:
+      "Praktické pravidlá pre používanie polí To, Cc, Bcc a pre správne reagovanie.",
+    sectionToCcBccTitle: "To, Cc, Bcc: ako a kedy používať",
+    sectionToCcBccDesc:
+      "Adresátov voľte tak, aby bolo jasné, kto má konať, kto je len v kópii a koho chránime z pohľadu osobných údajov.",
+    toTitle: "To",
+    toDesc: "Hlavní príjemcovia – očakávame od nich akciu alebo odpoveď.",
+    toItems: [
+      "Potvrdenie bezpečnostného cvičenia – majster výroby",
+      "Schválenie objednávky zariadenia – nákupca",
+      "Plánovanie sviatočných zmien – všetci vedúci zmien",
+    ],
+    ccTitle: "Cc",
+    ccDesc: "Kópia pre informáciu – bez očakávanej reakcie.",
+    ccItems: [
+      "Upravený postup kvality – v kópii riaditeľ závodu",
+      "Stav opravy stroja – v kópii plánovači výroby",
+      "Mesačné KPI výsledky – v kópii HR a financie",
+    ],
+    bccTitle: "Bcc",
+    bccDesc:
+      "Skrytá kópia – pre hromadné rozosielanie alebo internú kontrolu, ostatní adresu nevidia.",
+    bccItems: [
+      "Bezpečnostný newsletter – v Bcc bezpečák",
+      "Zmena smernice – v Bcc právne oddelenie",
+      "Informácia o expedícii zákazníkovi – v Bcc obchodný manažér",
+    ],
+    reactTitle: "Ako a kedy reagovať / odpovedať",
+    reactDesc:
+      "Odpovedajte len tam, kde pridávate hodnotu – a len ľuďom, ktorých sa to týka.",
+    shouldReplyTitle: "Odpovedať by ste mali, keď…",
+    shouldReplyItems: [
+      "Ste v poli To a je od vás požadovaná akcia alebo rozhodnutie.",
+      "Správa sa týka vašej zodpovednosti alebo vášho tímu.",
+      "Potrebujete spresnenie, aby ste úlohu vedeli splniť.",
+      "Je vhodné potvrdiť prijatie dôležitého pokynu.",
+    ],
+    shouldNotReplyTitle: "Naopak NEodpovedáte, keď…",
+    shouldNotReplyItems: [
+      "Ste iba v Cc pre informáciu.",
+      "Ide o všeobecné oznámenie alebo newsletter.",
+      "Odosielateľ jasne uvádza ‚Nie je potrebné odpovedať‘.",
+    ],
+    replyAllTitle: "Kedy použiť Reply All (Odpovedať všetkým)?",
+    replyAllItems: [
+      "Výsledok skupinového rozhodnutia – všetci majú poznať záver.",
+      "Stavová informácia dôležitá pre všetkých v To/Cc.",
+      "Krátke potvrdenie týkajúce sa celej skupiny (napr. ‚Pondelok nám tiež vyhovuje‘).",
+    ],
+    examplesTitle: "Príklady formulácií",
+    examplesReplyLabel: "Odpoveď",
+    examplesReply: [
+      "Ďakujem, správu som obdržal(a) a tím budem informovať.",
+      "Prosím o spresnenie, ktorého stroja sa problém týka.",
+      "Potvrdzujem prijatie pokynu, úlohu zabezpečíme podľa inštrukcií.",
+    ],
+    examplesNoReplyLabel: "Bez potreby reakcie",
+    examplesNoReply: [
+      "V prílohe zasielame termíny odstávky. (Nie je potrebné odpovedať)",
+      "Predmet: Týždenná štatistika výroby (Neodpovedajte na tento e‑mail)",
+      "Nový etický kódex – v prípade otázok sa obráťte na nadriadeného.",
+    ],
+    examplesReplyAllLabel: "Odpovedať všetkým",
+    examplesReplyAll: [
+      "Pondelok platí aj za náš tím.",
+      "Výroba takisto súhlasí s novým postupom.",
+      "Vitaj v tíme, John!",
+    ],
+    recTitle: "Odporúčania",
+    recItems: [
+      "Pred odoslaním vždy skontrolujte To, Cc a Bcc.",
+      "Používajte stručné a výstižné predmety správ.",
+      "Píšte krátke odseky, používajte odrážky.",
+      "Jasne napíšte, dokedy očakávate odpoveď.",
+      "Reply All používajte len vtedy, keď je to nevyhnutné.",
+      "Pre novú tému začnite nový e‑mailový reťazec.",
+    ],
+    summaryTitle: "Zhrnutie na jednom mieste",
+    summaryRows: [
+      {
+        usage: "To",
+        when: "Je potrebná akcia",
+        example: "To: Jana – Prosím o kontrolu priloženej správy.",
+      },
+      {
+        usage: "Cc",
+        when: "Len pre informáciu",
+        example: "Cc: HR – Pre vašu evidenciu, aktualizácia procesu miezd.",
+      },
+      {
+        usage: "Bcc",
+        when: "Súkromie / hromadné rozosielanie",
+        example: "Bcc: Sklad – Ročná bezpečnostná aktualizácia v prílohe.",
+      },
+      {
+        usage: "Reply",
+        when: "Akcia / upresnenie",
+        example: "Úlohu dokončím do piatku a potvrdím.",
+      },
+      {
+        usage: "Reply All",
+        when: "Dôležité pre všetkých",
+        example: "S navrhovaným harmonogramom súhlasíme.",
+      },
+    ],
+  },
+  uk: {
+    code: "UKR",
+    label: "Українська",
+    title: "Посібник з електронної комунікації",
+    subtitle:
+      "Практичні правила використання полів To, Cc, Bcc та правильних відповідей.",
+    sectionToCcBccTitle: "To, Cc, Bcc: як і коли використовувати",
+    sectionToCcBccDesc:
+      "Обирайте одержувачів так, щоб було зрозуміло, хто має діяти, хто лише поінформований і де важлива конфіденційність.",
+    toTitle: "To",
+    toDesc: "Основні адресати – від них очікуються дії або відповідь.",
+    toItems: [
+      "Підтвердження тренування з безпеки – майстер виробництва",
+      "Затвердження замовлення обладнання – менеджер із закупівель",
+      "Планування змін на свята – усі керівники змін",
+    ],
+    ccTitle: "Cc",
+    ccDesc: "Копія для інформації – відповідь, як правило, не очікується.",
+    ccItems: [
+      "Оновлена процедура якості – у копії директор заводу",
+      "Статус ремонту обладнання – у копії планувальники виробництва",
+      "Місячні показники KPI – у копії HR та фінанси",
+    ],
+    bccTitle: "Bcc",
+    bccDesc:
+      "Прихована копія – для масових розсилок або внутрішнього контролю, інші адреси не бачать.",
+    bccItems: [
+      "Інформаційний бюлетень з безпеки – служба безпеки в Bcc",
+      "Зміна політики – юридичний відділ у Bcc",
+      "Повідомлення про відвантаження клієнту – менеджер із продажу в Bcc",
+    ],
+    reactTitle: "Як і коли відповідати",
+    reactDesc:
+      "Відповідайте лише тоді, коли додаєте цінність – і тільки тим, кого це стосується.",
+    shouldReplyTitle: "Варто відповісти, коли…",
+    shouldReplyItems: [
+      "Ви зазначені в полі To і від вас очікується дія чи рішення.",
+      "Повідомлення стосується вашої зони відповідальності або вашої команди.",
+      "Вам потрібні уточнення, щоб виконати завдання.",
+      "Слід підтвердити отримання важливих інструкцій.",
+    ],
+    shouldNotReplyTitle: "Не потрібно відповідати, коли…",
+    shouldNotReplyItems: [
+      "Ви лише в полі Cc для інформації.",
+      "Це загальне оголошення або інформаційний лист.",
+      "Відправник чітко пише: ‘Відповідь не потрібна’.",
+    ],
+    replyAllTitle: "Коли доречно використовувати Reply All?",
+    replyAllItems: [
+      "Рішення групи – усі мають бачити кінцевий результат.",
+      "Оновлення статусу, важливі для всіх у To/Cc.",
+      "Короткі підтвердження, що стосуються всієї групи (наприклад, ‘Нам також підходить понеділок’).",
+    ],
+    examplesTitle: "Приклади формулювань",
+    examplesReplyLabel: "Відповідь",
+    examplesReply: [
+      "Дякую, повідомлення отримано, проінформую команду.",
+      "Будь ласка, уточніть, яке саме обладнання має проблему.",
+      "Підтверджую отримання інструкцій, виконаємо завдання згідно з ними.",
+    ],
+    examplesNoReplyLabel: "Відповідь не потрібна",
+    examplesNoReply: [
+      "У додатку – дати щорічної зупинки. (Відповідь не потрібна)",
+      "Тема: Тижнева виробнича статистика (Не відповідайте на цей лист)",
+      "Новий кодекс поведінки – звертайтеся з питаннями до керівника.",
+    ],
+    examplesReplyAllLabel: "Reply All",
+    examplesReplyAll: [
+      "Понеділок підходить і нашій команді.",
+      "Виробництво також підтримує новий процес.",
+      "Ласкаво просимо до команди, Джоне!",
+    ],
+    recTitle: "Рекомендації",
+    recItems: [
+      "Перед відправкою завжди перевіряйте поля To, Cc та Bcc.",
+      "Використовуйте чіткі, лаконічні теми листів.",
+      "Пишіть короткі абзаци, структуруйте текст маркованими списками.",
+      "Окремо зазначайте, чи потрібна відповідь і до якого часу.",
+      "Використовуйте Reply All лише тоді, коли інформація важлива для всіх.",
+      "Для нової теми створюйте новий ланцюжок листування.",
+    ],
+    summaryTitle: "Коротке резюме",
+    summaryRows: [
+      {
+        usage: "To",
+        when: "Потрібні дії",
+        example: "To: Олена – будь ласка, перевірте прикладений звіт.",
+      },
+      {
+        usage: "Cc",
+        when: "Лише інформування",
+        example: "Cc: HR – для вашого обліку, оновлення процесу нарахування зарплати.",
+      },
+      {
+        usage: "Bcc",
+        when: "Конфіденційність / масові розсилки",
+        example: "Bcc: Склад – щорічне оновлення з безпеки у додатку.",
+      },
+      {
+        usage: "Reply",
+        when: "Дія / уточнення",
+        example: "Завершу завдання до п’ятниці та підтверджу.",
+      },
+      {
+        usage: "Reply All",
+        when: "Важливо для всіх",
+        example: "Ми погоджуємося із запропонованим графіком.",
+      },
+    ],
+  },
+};
+
+const LANG_ORDER = ["cs", "sk", "en", "uk"];
+
+export default function EmailCommunicationGuide() {
+  const [lang, setLang] = useState("cs");
+  const t = TEXTS[lang];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-indigo-50 flex justify-center px-4 py-8">
+      <div className="w-full max-w-6xl bg-white/80 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-6 md:p-10 space-y-8">
+        {/* Header with language switcher */}
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-sky-700 to-indigo-700 bg-clip-text text-transparent">
+              {t.title}
+            </h1>
+            <p className="mt-2 text-sm md:text-base text-slate-600 max-w-2xl">
+              {t.subtitle}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            <span className="text-xs uppercase tracking-wide text-slate-500 mr-1">
+              Language / Jazyk
+            </span>
+            <div className="inline-flex rounded-full bg-slate-100 p-1">
+              {LANG_ORDER.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setLang(key)}
+                  className={`px-3 py-1 text-xs md:text-sm rounded-full font-medium transition-all ${
+                    lang === key
+                      ? "bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-sm"
+                      : "text-slate-700 hover:bg-white"
+                  }`}
+                >
+                  {TEXTS[key].code}
+                </button>
+              ))}
+            </div>
+          </div>
+        </header>
+
+        {/* To / Cc / Bcc */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-1.5 rounded-full bg-gradient-to-b from-sky-500 to-indigo-500" />
+            <div>
+              <h2 className="text-2xl font-semibold text-slate-800">
+                {t.sectionToCcBccTitle}
+              </h2>
+              <p className="text-sm text-slate-600">{t.sectionToCcBccDesc}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* TO */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-sky-100 shadow-sm">
+              <h3 className="text-lg font-semibold text-sky-900 mb-1 flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-sky-600 text-white text-xs font-bold">
+                  To
+                </span>
+                {t.toTitle}
+              </h3>
+              <p className="mb-3 text-xs text-slate-600">{t.toDesc}</p>
+              <ul className="list-disc ml-5 space-y-1.5 text-xs text-slate-700">
+                {t.toItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CC */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm">
+              <h3 className="text-lg font-semibold text-emerald-900 mb-1 flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white text-xs font-bold">
+                  Cc
+                </span>
+                {t.ccTitle}
+              </h3>
+              <p className="mb-3 text-xs text-slate-600">{t.ccDesc}</p>
+              <ul className="list-disc ml-5 space-y-1.5 text-xs text-slate-700">
+                {t.ccItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* BCC */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 shadow-sm">
+              <h3 className="text-lg font-semibold text-indigo-900 mb-1 flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-white text-xs font-bold">
+                  Bcc
+                </span>
+                {t.bccTitle}
+              </h3>
+              <p className="mb-3 text-xs text-slate-600">{t.bccDesc}</p>
+              <ul className="list-disc ml-5 space-y-1.5 text-xs text-slate-700">
+                {t.bccItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* How to react / reply */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-sky-500" />
+            <div>
+              <h2 className="text-2xl font-semibold text-slate-800">
+                {t.reactTitle}
+              </h2>
+              <p className="text-sm text-slate-600">{t.reactDesc}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <h3 className="text-base font-semibold text-slate-900 mb-2">
+                {t.shouldReplyTitle}
+              </h3>
+              <ul className="list-disc ml-5 space-y-1.5 text-xs text-slate-700">
+                {t.shouldReplyItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <h3 className="text-base font-semibold text-slate-900 mb-2">
+                {t.shouldNotReplyTitle}
+              </h3>
+              <ul className="list-disc ml-5 space-y-1.5 text-xs text-slate-700">
+                {t.shouldNotReplyItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <h3 className="text-base font-semibold text-slate-900 mb-2">
+                {t.replyAllTitle}
+              </h3>
+              <ul className="list-disc ml-5 space-y-1.5 text-xs text-slate-700">
+                {t.replyAllItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Examples */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-1.5 rounded-full bg-gradient-to-b from-amber-500 to-rose-500" />
+            <h2 className="text-2xl font-semibold text-slate-800">
+              {t.examplesTitle}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-700">
+            <div className="p-4 rounded-2xl bg-white border border-emerald-100 shadow-sm">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-emerald-600 mb-1">
+                {t.examplesReplyLabel}
+              </div>
+              <ul className="space-y-1.5">
+                {t.examplesReply.map((item, idx) => (
+                  <li key={idx}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 mb-1">
+                {t.examplesNoReplyLabel}
+              </div>
+              <ul className="space-y-1.5">
+                {t.examplesNoReply.map((item, idx) => (
+                  <li key={idx}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-indigo-100 shadow-sm">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 mb-1">
+                {t.examplesReplyAllLabel}
+              </div>
+              <ul className="space-y-1.5">
+                {t.examplesReplyAll.map((item, idx) => (
+                  <li key={idx}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Recommendations */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-1.5 rounded-full bg-gradient-to-b from-sky-500 to-emerald-500" />
+            <h2 className="text-2xl font-semibold text-slate-800">
+              {t.recTitle}
+            </h2>
+          </div>
+          <div className="p-4 md:p-5 rounded-2xl bg-sky-50/60 border border-sky-100 text-xs text-slate-800 grid md:grid-cols-2 gap-2">
+            {t.recItems.map((item, idx) => (
+              <div key={idx} className="flex gap-2">
+                <span className="mt-0.5 h-1.5 w-1.5 rounded-full bg-sky-500" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Summary table */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-1.5 rounded-full bg-gradient-to-b from-indigo-500 to-slate-500" />
+            <h2 className="text-2xl font-semibold text-slate-800">
+              {t.summaryTitle}
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto text-xs">
+            <table className="min-w-full border-collapse rounded-2xl overflow-hidden shadow-sm">
+              <thead className="bg-slate-900 text-slate-50">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold">Usage</th>
+                  <th className="px-3 py-2 text-left font-semibold">When</th>
+                  <th className="px-3 py-2 text-left font-semibold">Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {t.summaryRows.map((row, idx) => (
+                  <tr
+                    key={idx}
+                    className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                  >
+                    <td className="px-3 py-2 font-semibold text-slate-900 border-t border-slate-100">
+                      {row.usage}
+                    </td>
+                    <td className="px-3 py-2 text-slate-700 border-t border-slate-100">
+                      {row.when}
+                    </td>
+                    <td className="px-3 py-2 text-slate-700 border-t border-slate-100">
+                      {row.example}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+      </section>
+
+        <footer className="pt-4 border-t border-slate-100 text-[11px] text-slate-500 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <span>
+            Corporate email etiquette – internal training material.
+          </span>
+          <span>
+            Use this guide before sending emails with many recipients or sensitive information.
+          </span>
+        </footer>
+      </div>
+    </div>
+  );
+}
